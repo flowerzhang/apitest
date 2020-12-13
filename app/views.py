@@ -76,8 +76,13 @@ def prj_list(request):
 
 @login_required
 def prj_add(request):
+    """
+    新增项目
+    :param request:
+    :return:
+    """
     if request.method == 'POST':
-        name = request.POST.get('project_name')
+        name = request.POST.get('project_name') or request.POST.get('name')
         if Project.objects.filter(name=name):
             messages.error(request, "项目已存在")
         else:
@@ -95,7 +100,8 @@ def prj_update(request, prj_id):
         name = request.POST.get('name')
         description = request.POST.get('description')
         developer = request.POST.get('developer')
-        Project.objects.filter(id=prj_id).update(name=name, is_sign=is_sign, developer=developer,
+        Project.objects.filter(id=prj_id).update(name=name,
+                                                 developer=developer,
                                                  description=description)
         return HttpResponseRedirect('/project/')
     prj = get_object_or_404(Project, id=prj_id)
@@ -104,6 +110,12 @@ def prj_update(request, prj_id):
 
 @login_required
 def prj_del(request, prj_id):
+    """
+    删除项目
+    :param request:
+    :param prj_id:
+    :return:
+    """
     Project.objects.filter(id=prj_id).delete()
     return HttpResponseRedirect('/project/')
 
@@ -217,9 +229,9 @@ def api_add(request):
         method = request.POST.get('method')
         data_type = request.POST.get('data_type')
         description = request.POST.get('description')
-        request_header = request.POST.get('request_header')
+        # request_header = request.POST.get('request_header')
         request_body = request.POST.get('request_body')
-        response_header = request.POST.get('response_header')
+        # response_header = request.POST.get('response_header')
         response_body = request.POST.get('response_body')
         api = Api(name=name, project=project, url=url, method=method, data_type=data_type,
                   description=description, request_body=request_body,
